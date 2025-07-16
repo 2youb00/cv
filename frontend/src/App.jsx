@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import React, { useRef , useState, useEffect } from 'react'
 import { Mail, Phone, MapPin, Github, Linkedin, Code, Database, Globe, Download, Menu, X, ExternalLink, Monitor, Smartphone, Server } from 'lucide-react'
-
+import emailjs from '@emailjs/browser'
+import cv from "../../Ayoub_Souayeb_Professional_CV.pdf"
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
@@ -70,6 +71,26 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+
+  const form = useRef()
+
+  const sendEmail = (e) => {
+    e.preventDefault()
+
+    emailjs.sendForm(
+      'service_u4x26ff',      // من حسابك
+      'template_z82xmt7',     // من حسابك
+      form.current,
+      '1eMtfO2hROjNfS7tc'       // من حسابك
+    )
+    .then(() => {
+      alert('✅ Message sent successfully!')
+    })
+    .catch(() => {
+      alert('❌ Failed to send message.')
+    })
+
+  }
   return (
     <div className="min-h-screen bg-dark-100 text-white">
       {/* Navigation */}
@@ -158,10 +179,14 @@ function App() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
-                  <Download size={20} />
-                  Download CV
-                </button>
+                <a
+    href={cv}
+    download
+    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+  >
+    <Download size={20} />
+    Download CV
+  </a>
                 <a
                   href="#contact"
                   className="border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 px-8 py-3 rounded-lg transition-colors text-center"
@@ -199,7 +224,7 @@ function App() {
             {services.map((service, index) => {
               const IconComponent = service.icon
               return (
-                <div key={index} className="service-card group p-8">
+                <div key={index} className="service-card group p-8 ">
                   <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
                     <IconComponent size={24} className="text-blue-400" />
                   </div>
@@ -376,40 +401,50 @@ function App() {
               </div>
             </div>
 
-            <div className="service-card">
-              <form className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Name</label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 bg-dark-200/50 border border-dark-300/30 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-500"
-                    placeholder="Your Name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                  <input
-                    type="email"
-                    className="w-full px-4 py-3 bg-dark-200/50 border border-dark-300/30 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-500"
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Message</label>
-                  <textarea
-                    rows={4}
-                    className="w-full px-4 py-3 bg-dark-200/50 border border-dark-300/30 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-500 resize-none"
-                    placeholder="Tell me about your project..."
-                  ></textarea>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors"
-                >
-                  Send Message
-                </button>
-              </form>
-            </div>
+     <form ref={form} onSubmit={sendEmail} className="service-card space-y-6">
+  <div>
+    <label className="block text-sm font-medium text-gray-300 mb-2">Name</label>
+    <input
+      type="text"
+      name="name"
+      required
+      className="w-full px-4 py-3 bg-dark-200/50 border border-dark-300/30 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black placeholder-gray-500"
+      placeholder="Your Name"
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+    <input
+      type="email"
+      name="email"
+      required
+      className="w-full px-4 py-3 bg-dark-200/50 border border-dark-300/30 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black placeholder-gray-500"
+      placeholder="your.email@example.com"
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-300 mb-2">Message</label>
+    <textarea
+      name="message"
+      required
+      rows={4}
+      className="w-full px-4 py-3 bg-dark-200/50 border border-dark-300/30 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black placeholder-gray-500 resize-none"
+      placeholder="Tell me about your project..."
+    ></textarea>
+  </div>
+
+  {/* Hidden Time Field */}
+  <input type="hidden" name="time" value={new Date().toLocaleString()} />
+
+  <button
+    type="submit"
+    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors"
+  >
+    Send Message
+  </button>
+</form>
+
+
           </div>
         </div>
       </section>
